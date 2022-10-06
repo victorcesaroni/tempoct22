@@ -39,12 +39,12 @@ int main()
         int len = strlen(str);
         for (int i = 0; i < len; i++) {
             for (int j = i; j < len; j++) {   
-                int len = (j-i) + 1;
-                if (pal(str + i, len)) {
+                int sublen = (j-i) + 1;
+                if (pal(str + i, sublen)) {
                     if (len > maxLen) {
-                        maxLen = len;
+                        maxLen = sublen;
                         memset(dbg, 0, sizeof(dbg));
-                        memcpy(dbg, str + i, len);
+                        memcpy(dbg, str + i, sublen);
                     }
                 }
             }
