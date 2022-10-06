@@ -1,3 +1,5 @@
+// OK
+
 /**
  * Q4
  * Dada uma array de k , lista lincada “listas”, cada lista esta em ordem ascendente.
@@ -132,7 +134,7 @@ int main()
     while ((*ppListNode) != NULL) 
     {
         printf("%d", (*ppListNode)->val);
-        
+
         if ((*ppListNode)->next) {
             printf(", ");
         }
