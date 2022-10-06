@@ -4,7 +4,10 @@
 
 int pal(char *word, int len)
 {
-    for (int i = 0; i < len / 2 + 1; i++) {
+    if (len < 2) {
+        return 1;
+    }
+    for (int i = 0; i < len; i++) {
         if (word[i] != word[(len-1) - i]) {
             return 0;
         }
@@ -21,37 +24,34 @@ int main()
     O código deve apresentar a quantidade de letras do maior palíndromo dentro de cada string e zero
     caso não encontre.*/
 
-    char set[4096];
-    char fuzz[4096];
-    memset(set, 0, sizeof(set));
-    memset(fuzz, 0, sizeof(fuzz));
+    char str[4096];
+    char dbg[4096];
+    memset(str, 0, sizeof(str));
+    memset(dbg, 0, sizeof(dbg));
+    int len = strlen(str);
+        int maxLen = 0;
 
     FILE *fp = fopen("q1tests.txt", "r");
 
-    while (fgets(set, sizeof(set), fp))
+    while (fgets(str, sizeof(str), fp))
     {
-        printf("%s", set);
-        int len = strlen(fuzz);
-        int maxLen = 0;
-
-        // search for the substring with n letters
-        for (int n = 0; n < len; n++)
-        {
-            // build all possible combinations given the set of letters
-            for (int i = 0; i < n; i++)
-            {
-                for (int j = 0; j < n; j++)
-                {
+        printf("%s", str);
+        int len = strlen(str);
+        for (int i = 0; i < len; i++) {
+            for (int j = i; j < len; j++) {   
+                int len = (j-i) + 1;
+                if (pal(str + i, len)) {
+                    if (len > maxLen) {
+                        maxLen = len;
+                        memset(dbg, 0, sizeof(dbg));
+                        memcpy(dbg, str + i, len);
+                    }
                 }
             }
-
-            // TODO: finish me
-            
-            if (pal(fuzz, n)) {
-                maxLen = n;
-            }
-        }
+        }     
     }
+
+    pritnf("%s = %d\n", dbg, maxLen);
 
     fclose(fp);
 
