@@ -11,11 +11,10 @@ output = [ ]
 struct ListaNode* mergeKListas(struct ListNode** listas, int listasSize){}
 */
 
-    // TODO: finish me
-
-
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
+#include <string.h>
 
 typedef struct ListNode_t {
     int val;
@@ -23,50 +22,96 @@ typedef struct ListNode_t {
 } ListNode;
 
 typedef struct Lista_t {
-    int size;
     struct ListNode_t* nodes;
 } Lista;
 
-ListNode** nextFreeNodePointerAddr(Lista* lista) {
-    ListNode** pListNode = &lista->nodes;
-    while ((*pListNode) != NULL) {
-        pListNode = &(*pListNode)->next;
+ListNode** addNode(Lista* lista, int val);
+ListNode** insertNodeAfterNode(ListNode** ppListNode, int val);
+ListNode** nextFreeNodePointerAddr(Lista* lista);
+void mergeKListas(Lista* output, Lista* listas, int numListas);
+void mergeSortedLista(Lista* output, Lista* lista);
+
+ListNode** nextFreeNodePointerAddr(Lista* lista)
+{
+    ListNode** ppListNode = &(lista->nodes);
+
+    while ((*ppListNode) != NULL) {
+        ppListNode = &((*ppListNode)->next);
     }
-    return pListNode;
+
+    return ppListNode;
 }
 
-ListNode** mergeLista(Lista* output, Lista* lista) {
-    ListNode** pOutputNode = nextFreeNodePointerAddr(output);
-    (*pOutputNode) = lista->nodes;
-    output->size += lista->size;
-    return nextFreeNodePointerAddr(output);
-}
+void mergeSortedLista(Lista* output, Lista* lista)
+{
+    ListNode* inputNode = lista->nodes;
 
-ListNode** mergeKListas(Lista* output, Lista* listas, int numListas) {
-    for (int i = 0; i < numListas; i++) {
-        mergeLista(output, &listas[i]);
+    while (inputNode != NULL)
+    {
+        int val = inputNode->val;
+
+        ListNode** ppOutputNode = &(output->nodes);
+        ListNode** ppLast = ppOutputNode;
+        while ((*ppOutputNode) != NULL)
+        {
+            if ((*ppOutputNode)->val > val) {
+                break;
+            }
+            ppLast = ppOutputNode;
+            ppOutputNode = &((*ppOutputNode)->next);
+        }
+
+        if ((*ppLast) == NULL) {
+            addNode(output, val);
+        } else {
+            insertNodeAfterNode(ppLast, val);
+        }
+        
+        inputNode = inputNode->next;
     }
 }
 
-ListNode* addNode(Lista* lista, int val) {
-    ListNode** pListNode = nextFreeNodePointerAddr(lista);
-    (*pListNode) = malloc(sizeof(ListNode));
-    (*pListNode)->next = NULL;
-    (*pListNode)->val = val;
-    lista->size++;
-    return (*pListNode);
+void mergeKListas(Lista* output, Lista* listas, int numListas)
+{
+    for (int i = 0; i < numListas; i++)
+    {
+        mergeSortedLista(output, &listas[i]);
+    }
+}
+
+ListNode** addNode(Lista* lista, int val)
+{
+    ListNode** ppListNode = nextFreeNodePointerAddr(lista);
+
+    (*ppListNode) = malloc(sizeof(ListNode));
+    (*ppListNode)->next = NULL;
+    (*ppListNode)->val = val;
+
+    return ppListNode;
+}
+
+ListNode** insertNodeAfterNode(ListNode** ppListNode, int val)
+{
+    ListNode* oldNext = (*ppListNode)->next;
+
+    (*ppListNode)->next = malloc(sizeof(ListNode));
+    (*ppListNode)->next->next = oldNext;
+    (*ppListNode)->next->val = val;
+    
+    return ppListNode;
 }
 
 int main()
 {
     int numListas = 3;
+
     Lista* listas = (Lista*)malloc(sizeof(Lista) * numListas);
+
     for (int i = 0; i < numListas; i++) {
-        listas[i].size = 0;
         listas[i].nodes = NULL;
     }
+
     Lista* output = (Lista*)malloc(sizeof(Lista) * 1);
-    output->size = 0;
     output->nodes = NULL;
 
     addNode(&listas[0], 1);
@@ -82,11 +127,19 @@ int main()
 
     mergeKListas(output, listas, numListas);
     
-    ListNode** pListNode = &output->nodes;
-    while ((*pListNode) != NULL) {
-        printf("%d, ", (*pListNode)->val);
-        pListNode = &(*pListNode)->next;
+    printf("[ ");
+    ListNode** ppListNode = &(output->nodes);    
+    while ((*ppListNode) != NULL) 
+    {
+        printf("%d", (*ppListNode)->val);
+        
+        if ((*ppListNode)->next) {
+            printf(", ");
+        }
+
+        ppListNode = &((*ppListNode)->next);
     }
+    printf(" ]\n");
 
     return 0;
 }
