@@ -41,7 +41,7 @@ int main()
             for (int j = i; j < len; j++) {   
                 int sublen = (j-i) + 1;
                 if (pal(str + i, sublen)) {
-                    if (len > maxLen) {
+                    if (sublen > maxLen) {
                         maxLen = sublen;
                         memset(dbg, 0, sizeof(dbg));
                         memcpy(dbg, str + i, sublen);
