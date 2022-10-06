@@ -29,7 +29,7 @@ int main()
     memset(str, 0, sizeof(str));
     memset(dbg, 0, sizeof(dbg));
     int len = strlen(str);
-        int maxLen = 0;
+    int maxLen = 0;
 
     FILE *fp = fopen("q1tests.txt", "r");
 
