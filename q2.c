@@ -1,12 +1,6 @@
-/**
-Q2
-Recebendo via teclado um número romano converter em número decimal e printar o resultado.
-Números validos: I = 1, V = 5 , X = 10, L = 50, C = 100, D = 500, M = 1000
-Exemplos : IV = 4 , VI = 6 , XII = 12 , IX =9 , VIII = 8, MDCDLXXIV = 1974
-*/
-
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 enum eRomanValIndex {
     I=0,
@@ -16,10 +10,10 @@ enum eRomanValIndex {
     C,
     D,
     M,
-    NUM_VAL
+    NUM_VALS
 };
 
-const int ROMAN_VALUES_TO_DEC[NUM_VAL] = {
+const int ROMAN_VALUES_TO_DEC[NUM_VALS] = {
     1, // I,
     5, // V,
     10, // X,
@@ -34,7 +28,7 @@ int main()
     char input[4096];
     int indexed[4096];
 
-    sscanf("%s", input);
+    scanf("%s", input);
 
     int len = strlen(input);
     for (int i = 0; i < len; i++)
@@ -61,14 +55,11 @@ int main()
     {
         int r = indexed[i];
         if (last != -1) {
-            if (r > last) {
+            if (r < last) {
                 total += temp;
                 temp = 0;
-            } else if (r < last) {
+            } else if (r > last) {
                 total -= temp;
-                temp = 0;
-            } else {
-                total += temp;
                 temp = 0;
             }
         }
@@ -79,8 +70,6 @@ int main()
     total += temp;
 
     printf("%d\n", total);
-
-    // TODO: finish me
 
     return 0;
 }
