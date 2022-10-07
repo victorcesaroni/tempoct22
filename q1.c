@@ -12,12 +12,12 @@ caso não encontre.*/
 #include <math.h>
 #include <string.h>
 
-int pal(char *word, int len)
+int isPal(char *word, int len)
 {
     if (len < 2) {
-        return 1;
+        return 0;
     }
-    for (int i = 0; i < len; i++) {
+    for (int i = 0; i < len / 2 + 1; i++) {
         if (word[i] != word[(len-1) - i]) {
             return 0;
         }
@@ -28,42 +28,38 @@ int pal(char *word, int len)
 int main()
 {
     char str[4096];
-    //char dbg[4096];
+    char dbg[4096];
     memset(str, 0, sizeof(str));
-    //memset(dbg, 0, sizeof(dbg));
+    memset(dbg, 0, sizeof(dbg));
 
     FILE *fp = fopen("q1tests.txt", "r");
 
     while (fgets(str, sizeof(str), fp))
     {
         int len = strlen(str);
-        if (str[len-1] == '\r') {
-            str[len-1] = '\0';
-            len--;
-        }
-        if (str[len-1] == '\n') {
-            str[len-1] = '\0';
-            len--;
-        }
-
         int maxLen = 0;
+
+        if (str[len-1] == '\r') str[--len] = '\0';
+        if (str[len-1] == '\n') str[--len] = '\0';
         
-        //printf("- %s\n", str);
-        for (int i = 0; i < len; i++) {
-            for (int j = i; j < len; j++) {   
+        for (int i = 0; i < len; i++)
+        {
+            for (int j = i; j < len; j++)
+            {   
                 int sublen = (j-i) + 1;
-                if (pal(str + i, sublen)) {
+                if (sublen > 1 && isPal(str + i, sublen) )
+                {
                     if (sublen > maxLen) {
                         maxLen = sublen;
-                        //memset(dbg, 0, sizeof(dbg));
-                        //memcpy(dbg, str + i, sublen);
+                        memcpy(dbg, str + i, sublen);
+                        dbg[sublen] = '\0';
                         //printf("%s = %d\n", dbg, maxLen);
                     }
                 }
             }
         }
 
-        printf("%d\n", maxLen);
+        printf("%s, %s, %d\n", str, dbg, maxLen);
     }
 
     fclose(fp);
