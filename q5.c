@@ -1,140 +1,60 @@
-/*
-
-Q5 Refatorar o código abaixo, eficiência, identação, simplicidade são fatores considerados:
-O código fará o sorteio e a comparação com o “premio” se houver match , o retorno será “ganhou”.
-*/
-
-    // TODO: finish me
-
-/*
 #include <stdio.h>
 #include <stdlib.h>
+
 #define LINHAS 3
 #define COLUNAS 5
-int **cria_slot(int **slot)
-{
-    int col;
-    int line;
-    line = 0;
-    slot = malloc (sizeof(int *) * 3);
-    while (line < 3)
-        slot[line++] = malloc (sizeof (int));
-    line = 0;
-    col = 0;
-    while (line < 3)
-    {
-        printf("Insira os valores da linha %d:\n", (line + 1));
-        while (col < 5)
-        {
-            scanf("%d", &slot[line][col]);
-            col++;
-        }
-        col = 0;
-        line++;
-    }
-    return (slot);
-}
-int main (void)
-{
-    int premio[LINHAS][COLUNAS] = {{1,0,0,0,1}, {0,1,0,1,0}, {0,0,1,0,0}};
-    int **slot = 0;
-    int lines = 0;
-    int cols = 0;
-    slot = cria_slot(slot);
-    int comp = slot[0][0];
-    int count_prize = 0;
-    while (lines < 3 && count_prize != 5)
-    {
-        while (cols < 5)
-        {
-            if (comp == slot[lines][cols] && premio[lines][cols])
-            {
-                count_prize++;
-            }
-            cols++;
-        }
-        cols = 0;
-        lines ++;
-        if (lines == 3 && count_prize != 5)
-        {
-            lines = 0;
-            while (lines < 3)
-                free (slot[lines++]);
-            free(slot);
-            lines = 0;
-            cols = 0;
-            count_prize = 0;
-            slot = cria_slot(slot);
-            comp = slot[0][0];
-        }
-    }
-    printf ("Gahnou!\n");
-    return (0);
-}
-*/
+#define ARRIDX(i,j) ((i*COLUNAS)+j)
 
-
-#include <stdio.h>
-#include <stdlib.h>
-#define LINHAS 3
-#define COLUNAS 5
-int **cria_slot(int **slot)
+void cria_slot(int **ppSlot)
 {
-    int col;
-    int line;
-    line = 0;
-    slot = malloc (sizeof(int *) * 3);
-    while (line < 3)
-        slot[line++] = malloc (sizeof (int));
-    line = 0;
-    col = 0;
-    while (line < 3)
-    {
-        printf("Insira os valores da linha %d:\n", (line + 1));
-        while (col < 5)
-        {
-            scanf("%d", &slot[line][col]);
-            col++;
+    int* matrix = (int*)malloc(sizeof(int) * LINHAS * COLUNAS);
+    for (int line = 0; line < LINHAS; line++) {
+        printf("Insira os %d valores da linha %d/%d:\n", COLUNAS, (line + 1), LINHAS);
+        for (int col = 0; col < COLUNAS; col++) {
+            scanf("%d", &matrix[ARRIDX(line,col)]);
         }
-        col = 0;
-        line++;
     }
-    return (slot);
+    *ppSlot = matrix;
 }
-int main (void)
+
+int main()
 {
-    int premio[LINHAS][COLUNAS] = {{1,0,0,0,1}, {0,1,0,1,0}, {0,0,1,0,0}};
-    int **slot = 0;
-    int lines = 0;
-    int cols = 0;
-    slot = cria_slot(slot);
-    int comp = slot[0][0];
-    int count_prize = 0;
-    while (lines < 3 && count_prize != 5)
+    int premio[LINHAS * COLUNAS] = {
+        1,0,0,0,1, 
+        0,1,0,1,0, 
+        0,0,1,0,0
+    };
+
+    int ganhou = 0;
+    while (!ganhou)
     {
-        while (cols < 5)
+        int count_prize = 0;
+        int *slot = NULL;
+        cria_slot(&slot);
+        int comp = slot[ARRIDX(0,0)];
+        
+        for (int i = 0; (i < LINHAS) && !ganhou; i++)
         {
-            if (comp == slot[lines][cols] && premio[lines][cols])
+            for (int j = 0; (j < COLUNAS) && !ganhou; j++)
             {
-                count_prize++;
+                if (comp == slot[ARRIDX(i,j)] && premio[ARRIDX(i,j)]) {
+                    count_prize++;
+                }
+                if (count_prize == 5) {
+                    ganhou = 1;
+                }
             }
-            cols++;
         }
-        cols = 0;
-        lines ++;
-        if (lines == 3 && count_prize != 5)
-        {
-            lines = 0;
-            while (lines < 3)
-                free (slot[lines++]);
-            free(slot);
-            lines = 0;
-            cols = 0;
-            count_prize = 0;
-            slot = cria_slot(slot);
-            comp = slot[0][0];
+        
+        free(slot);
+        slot = NULL;
+
+        if (!ganhou) {
+            printf("Nao ganhou, tente novamente!\n");
         }
     }
-    printf ("Gahnou!\n");
-    return (0);
+    
+    printf("Gahnou!\n");
+
+    return 0;
 }
